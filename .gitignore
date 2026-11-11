@@ -1,0 +1,12 @@
+# Proprietary binary & reverse-engineering workspace artifacts
+analysis/
+logs/
+
+# Compiled binaries
+*.exe
+*.dll
+*.pdb
+
+# OS / Editor
+.DS_Store
+Thumbs.db
