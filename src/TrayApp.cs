@@ -188,21 +188,32 @@ namespace AjazzBatteryMonitor
                 g.Clear(Color.Transparent);
 
                 Color bg = Color.FromArgb(65, 65, 70);
+                Color fg = Color.White;
                 string text = "--";
-                bool showBolt = false;
 
                 if (status != null && status.Connected)
                 {
                     bool isWired = string.Equals(status.ConnectionMode, "USB", StringComparison.OrdinalIgnoreCase);
+                    bool isCharging = status.IsCharging || (isWired && status.Percent < 100);
                     text = status.Percent >= 100 ? "100" : status.Percent.ToString();
-                    showBolt = status.IsCharging;
 
                     if (status.Percent == 100 && isWired)
+                    {
                         bg = Color.FromArgb(0, 120, 215);    // Azul: 100% conectado no cabo USB
+                    }
+                    else if (isCharging)
+                    {
+                        bg = Color.FromArgb(250, 204, 21);   // Amarelo: carregando
+                        fg = Color.FromArgb(17, 24, 39);     // Texto escuro para alto contraste no amarelo
+                    }
                     else if (status.Percent <= 25)
+                    {
                         bg = Color.FromArgb(200, 42, 42);    // Vermelho: bateria baixa (<= 25%)
+                    }
                     else
-                        bg = Color.FromArgb(24, 150, 72);    // Verde: 26%..99% ou 100% sem fio
+                    {
+                        bg = Color.FromArgb(24, 150, 72);    // Verde: fora do cabo (26%..100%)
+                    }
                 }
 
                 using (var brush = new SolidBrush(bg))
@@ -210,39 +221,17 @@ namespace AjazzBatteryMonitor
                     g.FillRectangle(brush, 0, 0, 32, 32);
                 }
 
-                float textWidth = showBolt ? 22.0f : 32.0f;
-                float fontSize;
-                if (showBolt)
-                    fontSize = text.Length >= 3 ? 14.5f : 21.0f;
-                else
-                    fontSize = text.Length >= 3 ? 20.0f : 26.0f;
+                float fontSize = text.Length >= 3 ? 20.0f : 26.0f;
 
                 using (var font = new Font("Bahnschrift", fontSize, FontStyle.Bold, GraphicsUnit.Pixel))
-                using (var textBrush = new SolidBrush(Color.White))
+                using (var textBrush = new SolidBrush(fg))
                 using (var sf = new StringFormat(StringFormat.GenericTypographic)
                 {
                     Alignment = StringAlignment.Center,
                     LineAlignment = StringAlignment.Center
                 })
                 {
-                    g.DrawString(text, font, textBrush, new RectangleF(0, 1, textWidth, 31), sf);
-                }
-
-                if (showBolt)
-                {
-                    var bolt = new PointF[]
-                    {
-                        new PointF(28.5f, 4.0f),
-                        new PointF(22.5f, 16.5f),
-                        new PointF(26.5f, 16.5f),
-                        new PointF(23.5f, 28.0f),
-                        new PointF(30.5f, 14.0f),
-                        new PointF(26.5f, 14.0f)
-                    };
-                    using (var boltBrush = new SolidBrush(Color.FromArgb(255, 235, 59)))
-                    {
-                        g.FillPolygon(boltBrush, bolt);
-                    }
+                    g.DrawString(text, font, textBrush, new RectangleF(0, 1, 32, 31), sf);
                 }
 
                 IntPtr hIcon = bmp.GetHicon();
