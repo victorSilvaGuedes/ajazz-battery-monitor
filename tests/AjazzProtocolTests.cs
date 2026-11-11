@@ -142,31 +142,31 @@ namespace AjazzBatteryMonitor.Tests
             mon4.Update(new BatteryStatus(true, 100, true, "USB", ""));
             AssertEqual(0, hits4, "Single 100% glitch reset by 99% reading");
 
-            // 10. Low battery alerts: 25%, 20%, 15%, 10%, 5%, 0% (with debounce=2)
+            // 10. Low battery alerts: 20%, 15%, 10%, 5%, 0% (with debounce=2)
             var mon5 = new BatteryMonitor(2);
             var lowAlerts = new System.Collections.Generic.List<int>();
             mon5.LowBatteryAlert += st => lowAlerts.Add(st.Percent);
 
-            mon5.Update(new BatteryStatus(true, 30, false, "2.4G", ""));
-            mon5.Update(new BatteryStatus(true, 30, false, "2.4G", ""));
-            AssertEqual(0, lowAlerts.Count, "No low alert at 30%");
+            mon5.Update(new BatteryStatus(true, 25, false, "2.4G", ""));
+            mon5.Update(new BatteryStatus(true, 25, false, "2.4G", ""));
+            AssertEqual(0, lowAlerts.Count, "No low alert at 25%");
 
-            int[] steps = new int[] { 25, 20, 15, 10, 5, 0 };
+            int[] steps = new int[] { 20, 15, 10, 5, 0 };
             foreach (int pct in steps)
             {
                 mon5.Update(new BatteryStatus(true, pct, false, "2.4G", ""));
                 mon5.Update(new BatteryStatus(true, pct, false, "2.4G", ""));
             }
-            AssertEqual(6, lowAlerts.Count, "Low alerts fired for 25, 20, 15, 10, 5, 0");
-            AssertEqual(25, lowAlerts[0], "First low alert at 25%");
-            AssertEqual(20, lowAlerts[1], "Second low alert at 20%");
-            AssertEqual(0, lowAlerts[5], "Last low alert at 0%");
+            AssertEqual(5, lowAlerts.Count, "Low alerts fired for 20, 15, 10, 5, 0");
+            AssertEqual(20, lowAlerts[0], "First low alert at 20%");
+            AssertEqual(15, lowAlerts[1], "Second low alert at 15%");
+            AssertEqual(0, lowAlerts[4], "Last low alert at 0%");
 
             // 11. Low battery alerts do not fire while charging/USB or repeat at same level after brief sleep
             mon5.Update(new BatteryStatus(false, -1, false, "Offline", ""));
             mon5.Update(new BatteryStatus(true, 0, false, "2.4G", ""));
             mon5.Update(new BatteryStatus(true, 0, false, "2.4G", ""));
-            AssertEqual(6, lowAlerts.Count, "No duplicate 0% alert after brief sleep/wake");
+            AssertEqual(5, lowAlerts.Count, "No duplicate 0% alert after brief sleep/wake");
 
             var mon6 = new BatteryMonitor(2);
             int lowHits6 = 0;

@@ -16,7 +16,7 @@ Funciona em paralelo com o software oficial da Ajazz (`OemDrv.exe`), sem conflit
   - **Cinza (`--`):** mouse desligado, em repouso ou desconectado.
 - **Notificações Toast nativas do Windows:**
   - **Carga completa (`100%`):** notifica uma única vez por ciclo de carga ao atingir `100%` (com debounce de 2 leituras).
-  - **Bateria baixa (`25%` até `0%`):** notifica quando chega a `25%` sem fio e novamente a cada queda de `5%` (`20%`, `15%`, `10%`, `5%`, `0%`).
+  - **Bateria baixa (`20%` até `0%`):** notifica quando chega a `20%` sem fio e novamente a cada queda de `5%` (`15%`, `10%`, `5%`, `0%`).
 - **Menu de contexto (clique direito no ícone):**
   - *Atualizar agora*
   - *Testar notificação*

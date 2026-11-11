@@ -12,7 +12,7 @@ namespace AjazzBatteryMonitor
 
     /// <summary>
     /// Tracks charging progress and low-battery steps, emitting ChargeCompleted at 100%
-    /// and LowBatteryAlert at 25% and every 5% drop down to 0%.
+    /// and LowBatteryAlert at 20% and every 5% drop down to 0%.
     /// </summary>
     public sealed class BatteryMonitor
     {
@@ -107,21 +107,21 @@ namespace AjazzBatteryMonitor
             if (activelyCharging)
             {
                 _lowConfirmCount = 0;
-                if (status.Percent > 25)
+                if (status.Percent > 20)
                 {
                     _lastLowAlertPercent = -1;
                 }
                 return;
             }
 
-            if (status.Percent >= 30)
+            if (status.Percent >= 25)
             {
                 _lastLowAlertPercent = -1;
                 _lowConfirmCount = 0;
                 return;
             }
 
-            if (status.Percent > 25)
+            if (status.Percent > 20)
             {
                 _lowConfirmCount = 0;
                 return;
