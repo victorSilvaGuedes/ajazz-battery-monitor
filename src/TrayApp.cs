@@ -41,6 +41,7 @@ namespace AjazzBatteryMonitor
 
             _monitor = new BatteryMonitor(requiredConfirmations: 2);
             _monitor.ChargeCompleted += OnChargeCompleted;
+            _monitor.LowBatteryAlert += OnLowBatteryAlert;
 
             _statusItem = new ToolStripMenuItem("Ajazz AJ139 Pro: Verificando...") { Enabled = false };
             var refreshItem = new ToolStripMenuItem("Atualizar agora", null, (s, e) => TriggerPoll());
@@ -156,6 +157,16 @@ namespace AjazzBatteryMonitor
             SendFullNotification(isTest: false);
         }
 
+        private void OnLowBatteryAlert(BatteryStatus status)
+        {
+            Log(string.Format("Alerta de bateria baixa: {0}% ({1}). Enviando notificação.", status.Percent, status.RawHex));
+            string title = string.Format("Ajazz AJ139 Pro — Bateria em {0}%", status.Percent);
+            string body = status.Percent <= 5
+                ? "Bateria crítica! Conecte o cabo USB para carregar."
+                : "Bateria baixa. Conecte o cabo USB quando puder.";
+            DispatchNotification(title, body, ToolTipIcon.Warning);
+        }
+
         private void SendFullNotification(bool isTest)
         {
             string title = isTest
@@ -165,13 +176,18 @@ namespace AjazzBatteryMonitor
                 ? "As notificações do monitor de bateria estão funcionando."
                 : "O mouse atingiu 100% de carga. Você já pode desconectar o cabo USB para usar sem fio.";
 
+            DispatchNotification(title, body, ToolTipIcon.Info);
+        }
+
+        private void DispatchNotification(string title, string body, ToolTipIcon fallbackIcon)
+        {
             Task.Run(() => ToastNotifier.ShowToast(title, body, (t, m) =>
             {
                 try
                 {
                     _trayIcon.BalloonTipTitle = t;
                     _trayIcon.BalloonTipText = m;
-                    _trayIcon.BalloonTipIcon = ToolTipIcon.Info;
+                    _trayIcon.BalloonTipIcon = fallbackIcon;
                     _trayIcon.ShowBalloonTip(6000);
                 }
                 catch { }

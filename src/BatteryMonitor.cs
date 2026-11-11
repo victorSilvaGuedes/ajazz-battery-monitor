@@ -11,18 +11,22 @@ namespace AjazzBatteryMonitor
     }
 
     /// <summary>
-    /// Tracks charging progress and emits a single ChargeCompleted event per charge cycle when hitting 100%.
+    /// Tracks charging progress and low-battery steps, emitting ChargeCompleted at 100%
+    /// and LowBatteryAlert at 25% and every 5% drop down to 0%.
     /// </summary>
     public sealed class BatteryMonitor
     {
         private readonly int _requiredConfirmations;
         private int _fullConfirmCount;
         private bool _sawActiveCharge;
+        private int _lowConfirmCount;
+        private int _lastLowAlertPercent = -1;
 
         public ChargePhase Phase { get; private set; }
         public BatteryStatus LastStatus { get; private set; }
 
         public event Action<BatteryStatus> ChargeCompleted;
+        public event Action<BatteryStatus> LowBatteryAlert;
 
         public BatteryMonitor(int requiredConfirmations)
         {
@@ -33,7 +37,7 @@ namespace AjazzBatteryMonitor
         }
 
         /// <summary>
-        /// Processes a new battery reading and triggers ChargeCompleted once charging finishes at 100%.
+        /// Processes a new battery reading and triggers ChargeCompleted or LowBatteryAlert on confirmed transitions.
         /// </summary>
         public void Update(BatteryStatus status)
         {
@@ -43,12 +47,14 @@ namespace AjazzBatteryMonitor
             if (!status.Connected)
             {
                 _fullConfirmCount = 0;
+                _lowConfirmCount = 0;
                 _sawActiveCharge = false;
                 Phase = ChargePhase.Disconnected;
                 return;
             }
 
             bool isWired = string.Equals(status.ConnectionMode, "USB", StringComparison.OrdinalIgnoreCase);
+            UpdateLowBatteryAlert(status, isWired);
 
             // Reset notification latch once the mouse is unplugged/discharging below 98%
             if (Phase == ChargePhase.FullNotified)
@@ -92,6 +98,49 @@ namespace AjazzBatteryMonitor
                     _sawActiveCharge = false;
                     Phase = ChargePhase.Idle;
                 }
+            }
+        }
+
+        private void UpdateLowBatteryAlert(BatteryStatus status, bool isWired)
+        {
+            bool activelyCharging = status.IsCharging || isWired;
+            if (activelyCharging)
+            {
+                _lowConfirmCount = 0;
+                if (status.Percent > 25)
+                {
+                    _lastLowAlertPercent = -1;
+                }
+                return;
+            }
+
+            if (status.Percent >= 30)
+            {
+                _lastLowAlertPercent = -1;
+                _lowConfirmCount = 0;
+                return;
+            }
+
+            if (status.Percent > 25)
+            {
+                _lowConfirmCount = 0;
+                return;
+            }
+
+            bool shouldAlert = _lastLowAlertPercent < 0 || status.Percent <= _lastLowAlertPercent - 5;
+            if (!shouldAlert)
+            {
+                _lowConfirmCount = 0;
+                return;
+            }
+
+            _lowConfirmCount++;
+            if (_lowConfirmCount >= _requiredConfirmations)
+            {
+                _lastLowAlertPercent = status.Percent;
+                _lowConfirmCount = 0;
+                var handler = LowBatteryAlert;
+                if (handler != null) handler(status);
             }
         }
     }
