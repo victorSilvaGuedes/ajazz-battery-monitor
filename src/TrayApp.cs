@@ -219,6 +219,7 @@ namespace AjazzBatteryMonitor
                     }
                     else if (isCharging)
                     {
+                        text = "CB";
                         bg = Color.FromArgb(250, 204, 21);   // Amarelo: carregando
                         fg = Color.FromArgb(17, 24, 39);     // Texto escuro para alto contraste no amarelo
                     }

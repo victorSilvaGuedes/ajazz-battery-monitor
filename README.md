@@ -9,7 +9,7 @@ Funciona em paralelo com o software oficial da Ajazz (`OemDrv.exe`), sem conflit
 ## Funcionalidades
 
 - **Ícone dinâmico na bandeja do sistema** com a porcentagem atual em fonte grande (`Bahnschrift` Bold):
-  - **Amarelo:** carregando (conectado no cabo USB abaixo de `100%` ou sinal de carga ativo).
+  - **Amarelo (`CB`):** carregando (conectado no cabo USB abaixo de `100%` ou sinal de carga ativo).
   - **Azul (`100`):** conectado pelo cabo USB com carga completa (`100%`).
   - **Verde (`26`–`100`):** fora do cabo (`2.4G`), incluindo `100%` até `26%`.
   - **Vermelho (`<= 25`):** bateria baixa (`25%` ou menos).
