@@ -223,13 +223,13 @@ namespace AjazzBatteryMonitor
                         bg = Color.FromArgb(250, 204, 21);   // Amarelo: carregando
                         fg = Color.FromArgb(17, 24, 39);     // Texto escuro para alto contraste no amarelo
                     }
-                    else if (status.Percent <= 25)
+                    else if (status.Percent <= 20)
                     {
-                        bg = Color.FromArgb(200, 42, 42);    // Vermelho: bateria baixa (<= 25%)
+                        bg = Color.FromArgb(200, 42, 42);    // Vermelho: bateria baixa (<= 20%)
                     }
                     else
                     {
-                        bg = Color.FromArgb(24, 150, 72);    // Verde: fora do cabo (26%..100%)
+                        bg = Color.FromArgb(24, 150, 72);    // Verde: fora do cabo (25%..100%)
                     }
                 }
 

@@ -11,8 +11,8 @@ Funciona em paralelo com o software oficial da Ajazz (`OemDrv.exe`), sem conflit
 - **Ícone dinâmico na bandeja do sistema** com a porcentagem atual em fonte grande (`Bahnschrift` Bold):
   - **Amarelo (`CB`):** carregando (conectado no cabo USB abaixo de `100%` ou sinal de carga ativo).
   - **Azul (`100`):** conectado pelo cabo USB com carga completa (`100%`).
-  - **Verde (`26`–`100`):** fora do cabo (`2.4G`), incluindo `100%` até `26%`.
-  - **Vermelho (`<= 25`):** bateria baixa (`25%` ou menos).
+  - **Verde (`25`–`100`):** fora do cabo (`2.4G`), incluindo `100%` até `25%`.
+  - **Vermelho (`<= 20`):** bateria baixa (`20%` ou menos).
   - **Cinza (`--`):** mouse desligado, em repouso ou desconectado.
 - **Notificações Toast nativas do Windows:**
   - **Carga completa (`100%`):** notifica uma única vez por ciclo de carga ao atingir `100%` (com debounce de 2 leituras).
