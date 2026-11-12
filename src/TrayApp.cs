@@ -130,10 +130,21 @@ namespace AjazzBatteryMonitor
             }
             else
             {
-                string chargeTag = status.IsCharging
-                    ? "Carregando"
-                    : (status.Percent == 100 && status.ConnectionMode == "USB" ? "Carga completa" : status.ConnectionMode);
-                summary = string.Format("Ajazz AJ139 Pro: {0}% ({1})", status.Percent, chargeTag);
+                bool isWired = string.Equals(status.ConnectionMode, "USB", StringComparison.OrdinalIgnoreCase);
+                bool isCharging = status.IsCharging || (isWired && status.Percent < 100);
+
+                if (isCharging)
+                {
+                    summary = "Ajazz AJ139 Pro: Carregando";
+                }
+                else if (status.Percent == 100 && isWired)
+                {
+                    summary = "Ajazz AJ139 Pro: 100% (Carga completa)";
+                }
+                else
+                {
+                    summary = string.Format("Ajazz AJ139 Pro: {0}% ({1})", status.Percent, status.ConnectionMode);
+                }
             }
 
             _statusItem.Text = summary;
