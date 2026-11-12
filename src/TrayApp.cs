@@ -238,17 +238,18 @@ namespace AjazzBatteryMonitor
                     g.FillRectangle(brush, 0, 0, 32, 32);
                 }
 
-                float fontSize = text.Length >= 3 ? 20.0f : 26.0f;
+                float fontSize = text.Length >= 3 ? 15.0f : 19.0f;
 
-                using (var font = new Font("Bahnschrift", fontSize, FontStyle.Bold, GraphicsUnit.Pixel))
+                using (var font = new Font("Segoe UI", fontSize, FontStyle.Bold, GraphicsUnit.Pixel))
                 using (var textBrush = new SolidBrush(fg))
-                using (var sf = new StringFormat(StringFormat.GenericTypographic)
+                using (var sf = new StringFormat
                 {
                     Alignment = StringAlignment.Center,
-                    LineAlignment = StringAlignment.Center
+                    LineAlignment = StringAlignment.Center,
+                    FormatFlags = StringFormatFlags.NoWrap | StringFormatFlags.NoClip
                 })
                 {
-                    g.DrawString(text, font, textBrush, new RectangleF(0, 1, 32, 31), sf);
+                    g.DrawString(text, font, textBrush, new RectangleF(0, 0, 32, 32), sf);
                 }
 
                 IntPtr hIcon = bmp.GetHicon();
