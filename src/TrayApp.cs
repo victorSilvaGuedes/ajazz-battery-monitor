@@ -21,8 +21,10 @@ namespace AjazzBatteryMonitor
         private const int PollIntervalMs = 15000;
 
         private readonly NotifyIcon _trayIcon;
+        private readonly TaskbarWidget _taskbarWidget;
         private readonly ToolStripMenuItem _statusItem;
         private readonly ToolStripMenuItem _startupItem;
+        private readonly ToolStripMenuItem _showTrayIconItem;
         private readonly System.Windows.Forms.Timer _pollTimer;
         private readonly BatteryMonitor _monitor;
         private readonly string _launcherScriptPath;
@@ -50,6 +52,10 @@ namespace AjazzBatteryMonitor
             {
                 Checked = IsStartupEnabled()
             };
+            _showTrayIconItem = new ToolStripMenuItem("Exibir ícone na bandeja", null, (s, e) => ToggleTrayIcon())
+            {
+                Checked = true
+            };
             var openLogsItem = new ToolStripMenuItem("Abrir pasta de logs", null, (s, e) => OpenLogsFolder());
             var exitItem = new ToolStripMenuItem("Sair", null, (s, e) => ExitApplication());
 
@@ -59,6 +65,7 @@ namespace AjazzBatteryMonitor
             menu.Items.Add(refreshItem);
             menu.Items.Add(testToastItem);
             menu.Items.Add(_startupItem);
+            menu.Items.Add(_showTrayIconItem);
             menu.Items.Add(openLogsItem);
             menu.Items.Add(new ToolStripSeparator());
             menu.Items.Add(exitItem);
@@ -72,6 +79,8 @@ namespace AjazzBatteryMonitor
                 Visible = true
             };
             _trayIcon.DoubleClick += (s, e) => TriggerPoll();
+
+            _taskbarWidget = new TaskbarWidget(menu, TriggerPoll);
 
             _pollTimer = new System.Windows.Forms.Timer { Interval = PollIntervalMs };
             _pollTimer.Tick += (s, e) => TriggerPoll();
@@ -159,6 +168,11 @@ namespace AjazzBatteryMonitor
             {
                 DestroyIcon(oldIcon.Handle);
                 oldIcon.Dispose();
+            }
+
+            if (_taskbarWidget != null)
+            {
+                _taskbarWidget.UpdateStatus(status);
             }
         }
 
@@ -308,6 +322,13 @@ namespace AjazzBatteryMonitor
             }
         }
 
+        private void ToggleTrayIcon()
+        {
+            _showTrayIconItem.Checked = !_showTrayIconItem.Checked;
+            _trayIcon.Visible = _showTrayIconItem.Checked;
+            Log("Visibilidade do ícone da bandeja alterada para: " + _showTrayIconItem.Checked);
+        }
+
         private void OpenLogsFolder()
         {
             try
@@ -320,6 +341,10 @@ namespace AjazzBatteryMonitor
         private void ExitApplication()
         {
             _pollTimer.Stop();
+            if (_taskbarWidget != null)
+            {
+                _taskbarWidget.Dispose();
+            }
             _trayIcon.Visible = false;
             _trayIcon.Dispose();
             if (_currentIcon != null)

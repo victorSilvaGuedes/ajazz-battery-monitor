@@ -22,6 +22,7 @@ try {
         (Join-Path $srcDir 'BatteryMonitor.cs'),
         (Join-Path $srcDir 'HidNative.cs'),
         (Join-Path $srcDir 'ToastNotifier.cs'),
+        (Join-Path $srcDir 'TaskbarWidget.cs'),
         (Join-Path $srcDir 'TrayApp.cs')
     )
 
