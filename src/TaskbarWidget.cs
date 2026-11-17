@@ -263,13 +263,13 @@ namespace AjazzBatteryMonitor
                 opacity = 140;
             }
 
-            float iconPx = 17.0f * scale;
-            float textPx = 14.0f * scale;
-            float boltPx = 13.5f * scale;
+            float iconPx = 15.0f * scale;
+            float textPx = 13.0f * scale;
+            float boltPx = 12.0f * scale;
 
-            using (var iconFont = new Font("Segoe Fluent Icons", iconPx, FontStyle.Bold, GraphicsUnit.Pixel))
-            using (var textFont = new Font("Segoe UI", textPx, FontStyle.Bold, GraphicsUnit.Pixel))
-            using (var boltFont = new Font("Segoe Fluent Icons", boltPx, FontStyle.Bold, GraphicsUnit.Pixel))
+            using (var iconFont = new Font("Segoe Fluent Icons", iconPx, FontStyle.Regular, GraphicsUnit.Pixel))
+            using (var textFont = new Font("Segoe UI", textPx, FontStyle.Regular, GraphicsUnit.Pixel))
+            using (var boltFont = new Font("Segoe Fluent Icons", boltPx, FontStyle.Regular, GraphicsUnit.Pixel))
             using (var measureBmp = new Bitmap(1, 1))
             using (var gMeasure = Graphics.FromImage(measureBmp))
             {
