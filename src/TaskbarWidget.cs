@@ -280,8 +280,8 @@ namespace AjazzBatteryMonitor
                 SizeF sizeLabel = gMeasure.MeasureString(label, textFont);
                 SizeF sizeBolt = showBolt ? gMeasure.MeasureString(boltGlyph, boltFont) : SizeF.Empty;
 
-                int pad = (int)(6 * scale);
-                int gap = (int)(4 * scale);
+                int pad = (int)(4 * scale);
+                int gap = (int)(2 * scale);
                 int contentWidth = (int)(sizeMouse.Width + gap + sizeLabel.Width + (showBolt ? (gap + sizeBolt.Width) : 0));
                 int totalWidth = contentWidth + (pad * 2);
 
@@ -380,7 +380,7 @@ namespace AjazzBatteryMonitor
 
             uint dpi = 96;
             try { dpi = Math.Max(96, GetDpiForWindow(tray)); } catch { }
-            int margin = (int)(4 * dpi / 96);
+            int margin = (int)(2 * dpi / 96);
 
             return Math.Max(0, right - tr.Left - width - margin);
         }
