@@ -54,7 +54,7 @@ namespace AjazzBatteryMonitor
             };
             _showTrayIconItem = new ToolStripMenuItem("Exibir ícone na bandeja", null, (s, e) => ToggleTrayIcon())
             {
-                Checked = true
+                Checked = false
             };
             var openLogsItem = new ToolStripMenuItem("Abrir pasta de logs", null, (s, e) => OpenLogsFolder());
             var exitItem = new ToolStripMenuItem("Sair", null, (s, e) => ExitApplication());
@@ -76,7 +76,7 @@ namespace AjazzBatteryMonitor
                 Icon = _currentIcon,
                 Text = "Ajazz AJ139 Pro: Verificando...",
                 ContextMenuStrip = menu,
-                Visible = true
+                Visible = false
             };
             _trayIcon.DoubleClick += (s, e) => TriggerPoll();
 
